@@ -86,7 +86,7 @@ public class Mesh {
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
         // Draw the shape
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, numVertecies,
+        GLES20.glDrawElements(GLES20.GL_TRIANGLE_STRIP, numVertecies,
                 GLES20.GL_UNSIGNED_SHORT, vertexOrderBuffer);
         
         // Disable vertex array
