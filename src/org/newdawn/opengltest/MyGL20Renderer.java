@@ -1,5 +1,8 @@
 package org.newdawn.opengltest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -8,7 +11,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 public class MyGL20Renderer implements GLSurfaceView.Renderer {
-	private Mesh mesh;
+	private List<Mesh> meshes = new ArrayList<Mesh>();
 
 	private final float[] mMVPMatrix = new float[16];
     private final float[] mProjMatrix = new float[16];
@@ -18,7 +21,8 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // Set the background frame color
         GLES20.glClearColor(0f, 0f, 0f, 1.0f);
-        mesh = new Triangle();
+        meshes.add(new Square());
+        meshes.add(new Triangle());
     }
 
 	@Override
@@ -26,18 +30,27 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         
-        mesh.draw(mMVPMatrix);
+        for(Mesh mesh: meshes) {
+        	mesh.draw(mMVPMatrix);
+        }
     }
 
 	@Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
         
-        float ratio = (float) width / height;
+        float verticalClip = 1;
+        float horizontalClip = 1;
+        if(height>width) {
+        	verticalClip = (float) height / width;
+        } else {
+            horizontalClip = (float) width / height;
+        }
+        
 
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method
-        Matrix.frustumM(mProjMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+        Matrix.frustumM(mProjMatrix, 0, -horizontalClip, horizontalClip, -verticalClip, verticalClip, 3, 7);
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mVMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
