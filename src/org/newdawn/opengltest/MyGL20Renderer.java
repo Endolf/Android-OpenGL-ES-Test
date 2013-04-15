@@ -17,6 +17,8 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
 	private final float[] mMVPMatrix = new float[16];
     private final float[] mProjMatrix = new float[16];
     private final float[] mVMatrix = new float[16];
+    private Square square;
+    private Triangle triangle;
 	
 	@Override
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -24,12 +26,9 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0f, 0f, 0f, 1.0f);
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         
-        Square square = new Square();
-        Triangle triangle = new Triangle();
+        square = new Square();
+        triangle = new Triangle();
         
-        square.setPosition(new float[] {1,0,0,1});
-        triangle.setPosition(new float[] {-1,0,0,1});
-
         meshes.add(square);
 		meshes.add(triangle);
     }
@@ -39,6 +38,13 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         
+        long time = SystemClock.uptimeMillis() % 2000;
+        float offset = time/2000f;
+        offset = (float) Math.sin(offset * 2 * Math.PI);
+        
+        square.setPosition(new float[] {offset,0,0,0});
+        triangle.setPosition(new float[] {-offset,0,0,0});
+
         for(Mesh mesh: meshes) {
         	mesh.draw(mMVPMatrix);
         }

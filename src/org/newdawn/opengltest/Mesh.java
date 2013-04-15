@@ -36,7 +36,7 @@ public class Mesh {
 	private ShortBuffer vertexOrderBuffer;
 	private int numVertecies;
 	private int shaderProgram;
-	private float[] worldPosition = {0f,0f,0f,1f};
+	private float[] worldPosition = {0f,0f,0f,0f};
 	
 	private float[] colour;
 
@@ -61,13 +61,13 @@ public class Mesh {
 	}
 
 	public void setPosition(float[] newPosition) {
-		for(int i=0;i<4;i++) {
+		for(int i=0;i<3;i++) {
 			worldPosition[i] = newPosition[i];
 		}
 	}
 	
 	public void getPosition(float[] retVal) {
-		for(int i=0;i<4;i++) {
+		for(int i=0;i<3;i++) {
 			retVal[i] = worldPosition[i];
 		}
 	}
