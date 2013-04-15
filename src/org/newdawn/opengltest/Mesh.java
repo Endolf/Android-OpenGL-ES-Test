@@ -15,12 +15,14 @@ public class Mesh {
 	private static final int VERTEX_STRIDE = DIMENSIONS * 4; // 4 bytes per vertex
 	
 	private final String vertexShaderCode =
-        // This matrix member variable provides a hook to manipulate
+		// This matrix member variable provides a hook to manipulate
         // the coordinates of the objects that use this vertex shader
+        "uniform mat4 uMVPMatrix;" +
+
         "attribute vec4 vPosition;" +
         "void main() {" +
         // the matrix must be included as a modifier of gl_Position
-        "  gl_Position = vPosition;" +
+        "  gl_Position = vPosition * uMVPMatrix;" +
         "}";
 
     private final String fragmentShaderCode =
@@ -56,7 +58,7 @@ public class Mesh {
 	    GLES20.glLinkProgram(shaderProgram);                  // creates OpenGL ES program executables
 	}
 
-	public void draw() {
+	public void draw(float[] mvpMatrix) {
 		// Add program to OpenGL environment
         GLES20.glUseProgram(shaderProgram);
 
@@ -76,6 +78,12 @@ public class Mesh {
 
         // Set color for drawing the triangle
         GLES20.glUniform4fv(mColorHandle, 1, colour, 0);
+
+        // get handle to shape's transformation matrix
+        int mMVPMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "uMVPMatrix");
+
+        // Apply the projection and view transformation
+        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
         // Draw the shape
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, numVertecies,
