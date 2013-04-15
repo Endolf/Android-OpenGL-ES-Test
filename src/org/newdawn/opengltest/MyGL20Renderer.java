@@ -21,6 +21,8 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // Set the background frame color
         GLES20.glClearColor(0f, 0f, 0f, 1.0f);
+        GLES20.glEnable(GLES20.GL_CULL_FACE);
+        
         meshes.add(new Square());
         meshes.add(new Triangle());
     }
@@ -28,7 +30,7 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
 	@Override
     public void onDrawFrame(GL10 unused) {
         // Redraw background color
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         
         for(Mesh mesh: meshes) {
         	mesh.draw(mMVPMatrix);
@@ -53,7 +55,7 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
         Matrix.frustumM(mProjMatrix, 0, -horizontalClip, horizontalClip, -verticalClip, verticalClip, 3, 7);
 
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mVMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mVMatrix, 0, 0, 0, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
 		// Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix, 0, mVMatrix, 0);
