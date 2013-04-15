@@ -9,6 +9,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.SystemClock;
 
 public class MyGL20Renderer implements GLSurfaceView.Renderer {
 	private List<Mesh> meshes = new ArrayList<Mesh>();
@@ -23,8 +24,14 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0f, 0f, 0f, 1.0f);
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         
-        meshes.add(new Square());
-        meshes.add(new Triangle());
+        Square square = new Square();
+        Triangle triangle = new Triangle();
+        
+        square.setPosition(new float[] {1,0,0,1});
+        triangle.setPosition(new float[] {-1,0,0,1});
+
+        meshes.add(square);
+		meshes.add(triangle);
     }
 
 	@Override

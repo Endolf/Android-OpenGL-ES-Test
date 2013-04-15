@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.Arrays;
 
 import android.opengl.GLES20;
 
@@ -18,11 +19,11 @@ public class Mesh {
 		// This matrix member variable provides a hook to manipulate
         // the coordinates of the objects that use this vertex shader
         "uniform mat4 uMVPMatrix;" +
-
+        "uniform vec4 vWorldPosition;" + 
         "attribute vec4 vPosition;" +
         "void main() {" +
         // the matrix must be included as a modifier of gl_Position
-        "  gl_Position = vPosition * uMVPMatrix;" +
+        "  gl_Position = (vPosition + vWorldPosition) * uMVPMatrix;" +
         "}";
 
     private final String fragmentShaderCode =
@@ -35,6 +36,7 @@ public class Mesh {
 	private ShortBuffer vertexOrderBuffer;
 	private int numVertecies;
 	private int shaderProgram;
+	private float[] worldPosition = {0f,0f,0f,1f};
 	
 	private float[] colour;
 
@@ -58,6 +60,18 @@ public class Mesh {
 	    GLES20.glLinkProgram(shaderProgram);                  // creates OpenGL ES program executables
 	}
 
+	public void setPosition(float[] newPosition) {
+		for(int i=0;i<4;i++) {
+			worldPosition[i] = newPosition[i];
+		}
+	}
+	
+	public void getPosition(float[] retVal) {
+		for(int i=0;i<4;i++) {
+			retVal[i] = worldPosition[i];
+		}
+	}
+	
 	public void draw(float[] mvpMatrix) {
 		// Add program to OpenGL environment
         GLES20.glUseProgram(shaderProgram);
@@ -78,6 +92,9 @@ public class Mesh {
 
         // Set color for drawing the triangle
         GLES20.glUniform4fv(mColorHandle, 1, colour, 0);
+        
+        int vWorldPositionHandle = GLES20.glGetUniformLocation(shaderProgram, "vWorldPosition");
+        GLES20.glUniform4fv(vWorldPositionHandle, 1, worldPosition, 0);
 
         // get handle to shape's transformation matrix
         int mMVPMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "uMVPMatrix");
