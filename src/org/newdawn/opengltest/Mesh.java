@@ -22,7 +22,7 @@ public class Mesh {
         "attribute vec4 vPosition;" +
         "void main() {" +
         // the matrix must be included as a modifier of gl_Position
-        "  gl_Position = (vPosition + vWorldPosition) * uMVPMatrix;" +
+        "  gl_Position = (vPosition + vWorldPosition) * uMVPMatrix;" +        
         "}";
 
     private final String fragmentShaderCode =
