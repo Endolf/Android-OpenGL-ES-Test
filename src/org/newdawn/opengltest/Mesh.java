@@ -6,6 +6,7 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 
 public class Mesh {
@@ -17,12 +18,11 @@ public class Mesh {
 	private final String vertexShaderCode =
 		// This matrix member variable provides a hook to manipulate
         // the coordinates of the objects that use this vertex shader
-        "uniform mat4 uMVPMatrix;" +
-        "uniform vec4 vWorldPosition;" + 
+	    "uniform mat4 uMVPMatrix;" +
         "attribute vec4 vPosition;" +
         "void main() {" +
         // the matrix must be included as a modifier of gl_Position
-        "  gl_Position = (vPosition + vWorldPosition) * uMVPMatrix;" +        
+        "  gl_Position = vPosition * uMVPMatrix;" +        
         "}";
 
     private final String fragmentShaderCode =
@@ -35,7 +35,7 @@ public class Mesh {
 	private ShortBuffer vertexOrderBuffer;
 	private int numVertecies;
 	private int shaderProgram;
-	private float[] worldPosition = {0f,0f,0f,0f};
+	private float[] worldPosition = {0f,0f,0f};
 	
 	private float[] colour;
 
@@ -71,7 +71,7 @@ public class Mesh {
 		}
 	}
 	
-	public void draw(float[] mvpMatrix) {
+	public void draw(float[] mVMatrix, float[] mProjMatrix) {
 		// Add program to OpenGL environment
         GLES20.glUseProgram(shaderProgram);
 
@@ -92,14 +92,19 @@ public class Mesh {
         // Set color for drawing the triangle
         GLES20.glUniform4fv(mColorHandle, 1, colour, 0);
         
-        int vWorldPositionHandle = GLES20.glGetUniformLocation(shaderProgram, "vWorldPosition");
-        GLES20.glUniform4fv(vWorldPositionHandle, 1, worldPosition, 0);
+        float[] worldPositionMatrix = new float[16];
+		Matrix.setIdentityM(worldPositionMatrix , 0);
+		Matrix.setRotateEulerM(worldPositionMatrix, 0, 0, 0, 0);
+		Matrix.translateM(worldPositionMatrix, 0, worldPosition[0], worldPosition[1], worldPosition[2]);
+		
+		float[] mvpMatrix = new float[16];
+		Matrix.multiplyMM(mvpMatrix, 0, mVMatrix, 0, worldPositionMatrix, 0);
+		Matrix.multiplyMM(mvpMatrix, 0, mProjMatrix, 0, mvpMatrix, 0);
 
         // get handle to shape's transformation matrix
-        int mMVPMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "uMVPMatrix");
-
+        int mVPMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "uMVPMatrix");
         // Apply the projection and view transformation
-        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+        GLES20.glUniformMatrix4fv(mVPMatrixHandle, 1, false, mvpMatrix, 0);
 
         // Draw the shape
         GLES20.glDrawElements(GLES20.GL_TRIANGLE_STRIP, numVertecies,

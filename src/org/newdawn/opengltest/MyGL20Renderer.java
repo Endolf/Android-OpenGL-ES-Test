@@ -14,7 +14,6 @@ import android.os.SystemClock;
 public class MyGL20Renderer implements GLSurfaceView.Renderer {
 	private List<Mesh> meshes = new ArrayList<Mesh>();
 
-	private final float[] mMVPMatrix = new float[16];
     private final float[] mProjMatrix = new float[16];
     private final float[] mVMatrix = new float[16];
     private Square square;
@@ -46,12 +45,12 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
         float offset = time/2000f;
         offset = (float) Math.sin(offset * 2 * Math.PI);
         
-        square.setPosition(new float[] {offset,0,-0.1f,0});
-        triangle.setPosition(new float[] {-offset,0,0,0});
-        cube.setPosition(new float[] {0,-1+offset,-0.8f,0});
+        square.setPosition(new float[] {offset,0,-0.1f});
+        triangle.setPosition(new float[] {-offset,0,0});
+        cube.setPosition(new float[] {0,-1+offset,-0.8f});
 
         for(Mesh mesh: meshes) {
-        	mesh.draw(mMVPMatrix);
+        	mesh.draw(mVMatrix, mProjMatrix);
         }
     }
 
@@ -59,40 +58,15 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
         
-        float verticalClip = 1;
-        float horizontalClip = 1;
-        float aspectRatio = (float) width/height;
-        float fov = 60;
-        float near = 1;
-        float top;
-        float bottom;
-        float left;
-        float right;
+        float ratio = (float) width / height;
+		float frustumH = (float) (Math.tan(60 / 360.0f * Math.PI) * 3);
+		float frustumW = frustumH * ratio;
 
-        if(height>width) {
-        	verticalClip = (float) height / width;
-            top = (float) (Math.tan(fov * Math.PI / 360.0f) * near);
-            bottom = -top;
-            left = aspectRatio * bottom;
-            right = -left;
-        } else {
-            horizontalClip = (float) width / height;
-            right = (float) (Math.tan(fov * Math.PI / 360.0f) * near);
-            left = -right;
-            top = aspectRatio * right;
-            bottom = -top;
-        }
-        
-        // this projection matrix is applied to object coordinates
-        // in the onDrawFrame() method
-        //Matrix.frustumM(mProjMatrix, 0, left, right, bottom, top, near, 300);
-        Matrix.perspectiveM(mProjMatrix, 0, 60, aspectRatio, 3, 300);
-
+		Matrix.frustumM(mProjMatrix, 0, -frustumW, frustumW, -frustumH,
+				frustumH, 3, 300);
+		
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mVMatrix, 0, 3, 3, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-
-		// Calculate the projection and view transformation
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix, 0, mVMatrix, 0);
+        Matrix.setLookAtM(mVMatrix, 0, 0, 0, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
     }
 
