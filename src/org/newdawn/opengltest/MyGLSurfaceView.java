@@ -13,5 +13,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
         
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(new MyGL20Renderer());
+        
+        setKeepScreenOn(true);
 	}
 }
