@@ -42,12 +42,15 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         
         long time = SystemClock.uptimeMillis() % 2000;
-        float offset = time/2000f;
-        offset = (float) Math.sin(offset * 2 * Math.PI);
+        float deltaTime = time/2000f;
+        float offset = (float) Math.sin(deltaTime * 2 * Math.PI);
         
         square.setPosition(new float[] {0,0,-offset});
+        square.setRotation(new float[] {0,0,1,deltaTime * 360});
         triangle.setPosition(new float[] {-offset,0,0});
+        triangle.setRotation(new float[] {0,0,1,deltaTime * 360});
         cube.setPosition(new float[] {0,-1+offset,0});
+        cube.setRotation(new float[] {0,1,0,deltaTime * 360});
 
         for(Mesh mesh: meshes) {
         	mesh.draw(mVMatrix, mProjMatrix);
@@ -62,8 +65,7 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
 		float frustumH = (float) (Math.tan(60 / 360.0f * Math.PI) * 3);
 		float frustumW = frustumH * ratio;
 
-		Matrix.frustumM(mProjMatrix, 0, -frustumW, frustumW, -frustumH,
-				frustumH, 3, 300);
+		Matrix.frustumM(mProjMatrix, 0, -frustumW, frustumW, -frustumH,	frustumH, 3, 300);
 		
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mVMatrix, 0, 3, 3, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);

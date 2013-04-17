@@ -107,8 +107,8 @@ public class Mesh {
         
         float[] worldPositionMatrix = new float[16];
 		Matrix.setIdentityM(worldPositionMatrix , 0);
-		Matrix.rotateM(worldPositionMatrix, 0, worldRotation[3], worldRotation[0], worldRotation[1], worldRotation[2]);
 		Matrix.translateM(worldPositionMatrix, 0, worldPosition[0], worldPosition[1], worldPosition[2]);
+		Matrix.rotateM(worldPositionMatrix, 0, worldRotation[3], worldRotation[0], worldRotation[1], worldRotation[2]);
 		
 		float[] mvpMatrix = new float[16];
 		Matrix.multiplyMM(mvpMatrix, 0, mVMatrix, 0, worldPositionMatrix, 0);
