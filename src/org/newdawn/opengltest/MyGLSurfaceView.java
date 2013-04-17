@@ -2,6 +2,7 @@ package org.newdawn.opengltest;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.view.MotionEvent;
 
 public class MyGLSurfaceView extends GLSurfaceView {
 
@@ -14,6 +15,15 @@ public class MyGLSurfaceView extends GLSurfaceView {
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(new MyGL20Renderer());
         
+        // Render the view only when there is a change in the drawing data
+//        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        
         setKeepScreenOn(true);
 	}
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+//        requestRender();
+        return true;
+    }
 }
