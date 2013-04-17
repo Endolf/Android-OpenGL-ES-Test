@@ -66,7 +66,7 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
 				frustumH, 3, 300);
 		
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mVMatrix, 0, 0, 0, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mVMatrix, 0, 3, 3, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
     }
 
