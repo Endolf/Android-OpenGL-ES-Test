@@ -36,6 +36,7 @@ public class Mesh {
 	private int numVertecies;
 	private int shaderProgram;
 	private float[] worldPosition = {0f,0f,0f};
+	private float[] worldRotation = {0f,0f,1f,0f};
 	
 	private float[] colour;
 
@@ -71,6 +72,18 @@ public class Mesh {
 		}
 	}
 	
+	public void setRotation(float[] newRotation) {
+		for(int i=0;i<4;i++) {
+			worldRotation[i] = newRotation[i];
+		}
+	}
+	
+	public void getRotation(float[] retVal) {
+		for(int i=0;i<4;i++) {
+			retVal[i] = worldRotation[i];
+		}
+	}
+		
 	public void draw(float[] mVMatrix, float[] mProjMatrix) {
 		// Add program to OpenGL environment
         GLES20.glUseProgram(shaderProgram);
@@ -94,7 +107,7 @@ public class Mesh {
         
         float[] worldPositionMatrix = new float[16];
 		Matrix.setIdentityM(worldPositionMatrix , 0);
-		Matrix.setRotateEulerM(worldPositionMatrix, 0, 0, 0, 0);
+		Matrix.rotateM(worldPositionMatrix, 0, worldRotation[3], worldRotation[0], worldRotation[1], worldRotation[2]);
 		Matrix.translateM(worldPositionMatrix, 0, worldPosition[0], worldPosition[1], worldPosition[2]);
 		
 		float[] mvpMatrix = new float[16];
