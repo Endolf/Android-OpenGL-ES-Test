@@ -45,9 +45,9 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
         float offset = time/2000f;
         offset = (float) Math.sin(offset * 2 * Math.PI);
         
-        square.setPosition(new float[] {offset,0,-0.1f});
+        square.setPosition(new float[] {0,0,-offset});
         triangle.setPosition(new float[] {-offset,0,0});
-        cube.setPosition(new float[] {0,-1+offset,-0.8f});
+        cube.setPosition(new float[] {0,-1+offset,0});
 
         for(Mesh mesh: meshes) {
         	mesh.draw(mVMatrix, mProjMatrix);
