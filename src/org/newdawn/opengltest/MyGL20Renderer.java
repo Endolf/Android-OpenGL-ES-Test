@@ -24,8 +24,8 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // Set the background frame color
         GLES20.glClearColor(0f, 0f, 0f, 1.0f);
-        GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        GLES20.glDepthFunc(GLES20.GL_LESS);
         
         square = new Square();
         triangle = new Triangle();
@@ -46,11 +46,11 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
         float offset = (float) Math.sin(deltaTime * 2 * Math.PI);
         
         square.setPosition(new float[] {0,0,-offset});
-        square.setRotation(new float[] {0,0,1,deltaTime * 360});
+        square.setRotation(new float[] {1,0,0,deltaTime * 360});
         triangle.setPosition(new float[] {-offset,0,0});
-        triangle.setRotation(new float[] {0,0,1,deltaTime * 360});
+        triangle.setRotation(new float[] {0,1,0,deltaTime * 360});
         cube.setPosition(new float[] {0,-1+offset,0});
-        cube.setRotation(new float[] {0,1,0,deltaTime * 360});
+        cube.setRotation(new float[] {0,0,1,deltaTime * 360});
 
         for(Mesh mesh: meshes) {
         	mesh.draw(mVMatrix, mProjMatrix);

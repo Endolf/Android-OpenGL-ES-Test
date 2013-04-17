@@ -39,10 +39,12 @@ public class Mesh {
 	private float[] worldRotation = {0f,0f,1f,0f};
 	
 	private float[] colour;
+	private boolean isTwoSided;
 
-	public Mesh(float[] vertecies, float[] colour, short[] vertexOrder) {
+	public Mesh(float[] vertecies, float[] colour, short[] vertexOrder, boolean isTwoSided) {
 		numVertecies = vertexOrder.length;
 		
+		this.isTwoSided = isTwoSided;
 		this.colour = colour;
 		
 		vertexBuffer = ByteBuffer.allocateDirect(BYTES_PER_FLOAT * vertecies.length).order(ByteOrder.nativeOrder()).asFloatBuffer();
@@ -85,6 +87,12 @@ public class Mesh {
 	}
 		
 	public void draw(float[] mVMatrix, float[] mProjMatrix) {
+		if(isTwoSided) {
+	        GLES20.glDisable(GLES20.GL_CULL_FACE);
+		} else {
+	        GLES20.glEnable(GLES20.GL_CULL_FACE);
+		}
+		
 		// Add program to OpenGL environment
         GLES20.glUseProgram(shaderProgram);
 
