@@ -57,6 +57,12 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
         }
     }
 
+	public void setCameraOrientation(float xAngle, float yAngle) {
+//		Matrix.setRotateEulerM(mVMatrix, 0, xAngle, yAngle, 0);
+		Matrix.translateM(mVMatrix, 0, 0, 0, 3);
+		Matrix.invertM(mVMatrix, 0, mVMatrix, 0);
+	}
+	
 	@Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
@@ -68,8 +74,8 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
 		Matrix.frustumM(mProjMatrix, 0, -frustumW, frustumW, -frustumH,	frustumH, 3, 300);
 		
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mVMatrix, 0, 3, 3, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-
+//        Matrix.setLookAtM(mVMatrix, 0, 0, 0, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+		setCameraOrientation(0, 0);
     }
 
 	public static int loadShader(int type, String shaderCode){

@@ -6,6 +6,8 @@ import android.view.MotionEvent;
 
 public class MyGLSurfaceView extends GLSurfaceView {
 
+	private MyGL20Renderer renderer;
+	
 	public MyGLSurfaceView(Context context){
         super(context);
 
@@ -13,7 +15,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
         setEGLContextClientVersion(2);
         
         // Set the Renderer for drawing on the GLSurfaceView
-        setRenderer(new MyGL20Renderer());
+        renderer = new MyGL20Renderer();
+		setRenderer(renderer);
         
         // Render the view only when there is a change in the drawing data
 //        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
@@ -23,7 +26,16 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-//        requestRender();
+    	switch (e.getAction()) {
+        	case MotionEvent.ACTION_MOVE:
+        		if(e.getHistorySize()>0) {
+	        		float deltaX = e.getX() - e.getHistoricalX(e.getHistorySize()-1);
+	        		float deltaY = e.getY() - e.getHistoricalY(e.getHistorySize()-1);
+	        		
+	        		renderer.setCameraOrientation(deltaX, deltaY);
+        		}
+    	}
+        	
         return true;
     }
 }
