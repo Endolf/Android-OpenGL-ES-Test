@@ -12,6 +12,8 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 
 public class MyGL20Renderer implements GLSurfaceView.Renderer {
+	private static final int FRONT_CLIP_DISTANCE = 3;
+
 	private List<Mesh> meshes = new ArrayList<Mesh>();
 
     private final float[] mProjMatrix = new float[16];
@@ -58,9 +60,8 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
     }
 
 	public void rotateCamera(float xAngle, float yAngle) {
-//		Matrix.setRotateEulerM(mVMatrix, 0, xAngle, yAngle, 0);
-		Matrix.translateM(mVMatrix, 0, 0, 0, 3);
-		Matrix.invertM(mVMatrix, 0, mVMatrix, 0);
+		Matrix.rotateM(mVMatrix, 0, xAngle, 1, 0, 0);
+		Matrix.rotateM(mVMatrix, 0, yAngle, 0, 1, 0);
 	}
 	
 	@Override
@@ -68,14 +69,14 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
         GLES20.glViewport(0, 0, width, height);
         
         float ratio = (float) width / height;
-		float frustumH = (float) (Math.tan(60 / 360.0f * Math.PI) * 3);
+		float frustumH = (float) (Math.tan(60 / 360.0f * Math.PI) * FRONT_CLIP_DISTANCE);
 		float frustumW = frustumH * ratio;
 
-		Matrix.frustumM(mProjMatrix, 0, -frustumW, frustumW, -frustumH,	frustumH, 3, 300);
+		Matrix.frustumM(mProjMatrix, 0, -frustumW, frustumW, -frustumH,	frustumH, FRONT_CLIP_DISTANCE, 300);
 		
         // Set the camera position (View matrix)
-//        Matrix.setLookAtM(mVMatrix, 0, 0, 0, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-		rotateCamera(0, 0);
+        Matrix.setLookAtM(mVMatrix, 0, 0, 0, 5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+		rotateCamera(45, 0);
     }
 
 	public static int loadShader(int type, String shaderCode){

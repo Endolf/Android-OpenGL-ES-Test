@@ -32,7 +32,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 	        		float deltaX = e.getX() - e.getHistoricalX(e.getHistorySize()-1);
 	        		float deltaY = e.getY() - e.getHistoricalY(e.getHistorySize()-1);
 	        		
-	        		renderer.rotateCamera(deltaX, deltaY);
+	        		renderer.rotateCamera(deltaY / 2, deltaX / 2);
         		}
     	}
         	
