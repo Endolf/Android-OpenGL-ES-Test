@@ -57,7 +57,7 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
         }
     }
 
-	public void setCameraOrientation(float xAngle, float yAngle) {
+	public void rotateCamera(float xAngle, float yAngle) {
 //		Matrix.setRotateEulerM(mVMatrix, 0, xAngle, yAngle, 0);
 		Matrix.translateM(mVMatrix, 0, 0, 0, 3);
 		Matrix.invertM(mVMatrix, 0, mVMatrix, 0);
@@ -75,7 +75,7 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
 		
         // Set the camera position (View matrix)
 //        Matrix.setLookAtM(mVMatrix, 0, 0, 0, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-		setCameraOrientation(0, 0);
+		rotateCamera(0, 0);
     }
 
 	public static int loadShader(int type, String shaderCode){
