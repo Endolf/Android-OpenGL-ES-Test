@@ -18,6 +18,9 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
 
     private final float[] mProjMatrix = new float[16];
     private final float[] mVMatrix = new float[16];
+    private float cameraXRotation = 0;
+    private float cameraYRotation = 0;
+    private float cameraDistance = 5;
     private Square square;
     private Triangle triangle;
     private Cube cube;
@@ -60,8 +63,19 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
     }
 
 	public void rotateCamera(float xAngle, float yAngle) {
-		Matrix.rotateM(mVMatrix, 0, xAngle, 1, 0, 0);
-		Matrix.rotateM(mVMatrix, 0, yAngle, 0, 1, 0);
+		Matrix.setIdentityM(mVMatrix, 0);
+		Matrix.translateM(mVMatrix, 0, 0, 0, -cameraDistance);
+		
+		cameraYRotation = cameraYRotation + yAngle;
+		if(cameraYRotation>180) cameraYRotation = cameraYRotation - 180;
+		if(cameraYRotation < -180) cameraYRotation = cameraYRotation + 180;
+		
+		cameraXRotation = cameraXRotation + xAngle;
+		if(cameraXRotation > 90) cameraXRotation = 90;
+		if(cameraXRotation < -90) cameraXRotation = -90;
+		
+		Matrix.rotateM(mVMatrix, 0, cameraXRotation, 1, 0, 0);
+		Matrix.rotateM(mVMatrix, 0, cameraYRotation, 0, 1, 0);
 	}
 	
 	@Override
@@ -74,8 +88,6 @@ public class MyGL20Renderer implements GLSurfaceView.Renderer {
 
 		Matrix.frustumM(mProjMatrix, 0, -frustumW, frustumW, -frustumH,	frustumH, FRONT_CLIP_DISTANCE, 300);
 		
-        // Set the camera position (View matrix)
-        Matrix.setLookAtM(mVMatrix, 0, 0, 0, 5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 		rotateCamera(45, 0);
     }
 
