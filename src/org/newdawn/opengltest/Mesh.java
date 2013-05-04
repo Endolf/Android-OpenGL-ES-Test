@@ -13,15 +13,12 @@ public class Mesh {
 	public static final int DIMENSIONS = 3;
 	public static final int BYTES_PER_FLOAT = 4;
 	public static final int BYTES_PER_SHORT = 2;
-	private static final int VERTEX_STRIDE = DIMENSIONS * 4; // 4 bytes per vertex
+	private static final int VERTEX_STRIDE = DIMENSIONS * 4;
 	
 	private final String vertexShaderCode =
-		// This matrix member variable provides a hook to manipulate
-        // the coordinates of the objects that use this vertex shader
 	    "uniform mat4 uMVPMatrix;" +
         "attribute vec4 vPosition;" +
         "void main() {" +
-        // the matrix must be included as a modifier of gl_Position
         "  gl_Position = uMVPMatrix * vPosition;" +        
         "}";
 
@@ -56,10 +53,10 @@ public class Mesh {
 		int vertexShader = MyGL20Renderer.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
 		int fragmentShader = MyGL20Renderer.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
-		shaderProgram = GLES20.glCreateProgram();             // create empty OpenGL ES Program
-	    GLES20.glAttachShader(shaderProgram, vertexShader);   // add the vertex shader to program
-	    GLES20.glAttachShader(shaderProgram, fragmentShader); // add the fragment shader to program
-	    GLES20.glLinkProgram(shaderProgram);                  // creates OpenGL ES program executables
+		shaderProgram = GLES20.glCreateProgram();
+	    GLES20.glAttachShader(shaderProgram, vertexShader);
+	    GLES20.glAttachShader(shaderProgram, fragmentShader);
+	    GLES20.glLinkProgram(shaderProgram);
 	}
 
 	public void setPosition(float[] newPosition) {
@@ -93,24 +90,18 @@ public class Mesh {
 	        GLES20.glEnable(GLES20.GL_CULL_FACE);
 		}
 		
-		// Add program to OpenGL environment
         GLES20.glUseProgram(shaderProgram);
 
-        // get handle to vertex shader's vPosition member
         int mPositionHandle = GLES20.glGetAttribLocation(shaderProgram, "vPosition");
 
-        // Enable a handle to the triangle vertices
         GLES20.glEnableVertexAttribArray(mPositionHandle);
 
-        // Prepare the triangle coordinate data
         GLES20.glVertexAttribPointer(mPositionHandle, DIMENSIONS,
                                      GLES20.GL_FLOAT, false,
                                      VERTEX_STRIDE, vertexBuffer);
 
-        // get handle to fragment shader's vColor member
         int mColorHandle = GLES20.glGetUniformLocation(shaderProgram, "vColor");
 
-        // Set color for drawing the triangle
         GLES20.glUniform4fv(mColorHandle, 1, colour, 0);
         
         float[] worldPositionMatrix = new float[16];
@@ -122,16 +113,12 @@ public class Mesh {
 		Matrix.multiplyMM(mvpMatrix, 0, mVMatrix, 0, worldPositionMatrix, 0);
 		Matrix.multiplyMM(mvpMatrix, 0, mProjMatrix, 0, mvpMatrix, 0);
 
-        // get handle to shape's transformation matrix
         int mVPMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "uMVPMatrix");
-        // Apply the projection and view transformation
         GLES20.glUniformMatrix4fv(mVPMatrixHandle, 1, false, mvpMatrix, 0);
 
-        // Draw the shape
         GLES20.glDrawElements(GLES20.GL_TRIANGLE_STRIP, numVertecies,
                 GLES20.GL_UNSIGNED_SHORT, vertexOrderBuffer);
         
-        // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
        }
 }

@@ -11,15 +11,10 @@ public class MyGLSurfaceView extends GLSurfaceView {
 	public MyGLSurfaceView(Context context){
         super(context);
 
-        // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2);
         
-        // Set the Renderer for drawing on the GLSurfaceView
         renderer = new MyGL20Renderer();
 		setRenderer(renderer);
-        
-        // Render the view only when there is a change in the drawing data
-//        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         
         setKeepScreenOn(true);
 	}
@@ -32,7 +27,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 	        		float deltaX = e.getX() - e.getHistoricalX(e.getHistorySize()-1);
 	        		float deltaY = e.getY() - e.getHistoricalY(e.getHistorySize()-1);
 	        		
-	        		renderer.rotateCamera(deltaY / 2, deltaX / 2);
+	        		renderer.rotateCamera(-deltaY, -deltaX);
         		}
     	}
         	
