@@ -15,8 +15,6 @@ public class MyGLSurfaceView extends GLSurfaceView {
         
         renderer = new MyGL20Renderer();
 		setRenderer(renderer);
-        
-        setKeepScreenOn(true);
 	}
 
     @Override
