@@ -50,8 +50,8 @@ public class Mesh {
 		vertexBuffer.put(vertecies).position(0);
 		vertexOrderBuffer.put(vertexOrder).position(0);
 
-		int vertexShader = MyGL20Renderer.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-		int fragmentShader = MyGL20Renderer.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+		int vertexShader = Mesh.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+		int fragmentShader = Mesh.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
 		shaderProgram = GLES20.glCreateProgram();
 	    GLES20.glAttachShader(shaderProgram, vertexShader);
@@ -120,5 +120,15 @@ public class Mesh {
                 GLES20.GL_UNSIGNED_SHORT, vertexOrderBuffer);
         
         GLES20.glDisableVertexAttribArray(mPositionHandle);
-       }
+	}
+	
+	public static int loadShader(int type, String shaderCode){
+
+	    int shader = GLES20.glCreateShader(type);
+
+	    GLES20.glShaderSource(shader, shaderCode);
+	    GLES20.glCompileShader(shader);
+
+	    return shader;
+	}
 }
